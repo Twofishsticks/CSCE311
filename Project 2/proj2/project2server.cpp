@@ -113,3 +113,9 @@ class DomainSocketServer : public UnixDomainSocket {
       }
       }
 };
+
+// handle everything in here
+// arg 1 = domain socket name
+int main (int argc, char *argv[]) {
+
+}

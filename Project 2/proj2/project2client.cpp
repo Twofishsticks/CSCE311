@@ -81,3 +81,13 @@ class DomainSocketSocket : public UnixDomainSocket {
       }
     }
 };
+
+// client side
+// arg 1 = domain socket name
+// arg 2 = file to search through
+// arg 3 = what to search
+int main (int argc, char *argv[]) {
+
+
+  // on connection, write 
+}
