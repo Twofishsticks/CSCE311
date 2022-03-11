@@ -1,11 +1,29 @@
-make:
-	@echo 'do the thing'
+# Copyright 2022  CSCE311
+cc = g++  # use g++ compiler
 
-text-client:
-	@echo 'You should implement me for points'
+flags = -std=c++17  # compile with C++ 17 standard
+flags += -Wall  # compile with all warnings
+flags += -g  # produce debugging information
+#flags += -I .. # add pwd directory to src include path
+#flags += -pthread # support for POSIX threads
 
-text-server:
-	@echo 'You should implement me for points'
+link = $(cc) $(flags) -o
+compile = $(cc) $(flags) -c
 
+
+# socket-cli-srv
+#
+#socket-cli-srv: socket_cli_srv.cc
+#	$(link) $@ $^
+make: text-server text-client
+
+
+# Clean up
 clean:
-	@echo 'You should implement me for points'
+	$(RM) text-client text-server
+
+text-client: project2client.cpp
+	$(link) $@ $^
+
+text-server: project2server.cpp
+	$(link) $@ $^

@@ -11,12 +11,13 @@
 
 #include<string>
 #include<iostream>
-using std::string
+using std::string;
+
 class UnixDomainSocket {
 
   public:
     explicit UnixDomainSocket(const char *sock_path) {
-      sock_path_ = string(sock_path);
+      string sock_path_ = string(sock_path);
       sock_add_ = {}; // cool struct thing
       sock_add_.sun_family = AF_UNIX; // set to UNIX socket type
 
@@ -27,7 +28,7 @@ class UnixDomainSocket {
     }
 
   protected:
-    std::sockaddr_un sock_add_; //sock add from sys/un.h
+    sockaddr_un sock_add_; //sock add from sys/un.h
     string sock_path;           // string is *char
 };
 
@@ -62,7 +63,7 @@ class DomainSocketSocket : public UnixDomainSocket {
           if (std::cin.gcount() == kWrite_buffer_size - 1 && std::cin.fail()) {
             std::cin.clear();
           }
-          ssize_t bytes_wrote = write(sock_fd, write_buffer, std::cin.gcount());
+          ssize_t bytes_wrote = write(socket_fd, write_buffer, std::cin.gcount());
           std::cout << "sent" << std::cin.gcount() << " bytes" << std::endl;
           if (bytes_wrote < 0) {
             std::cerr << strerror(errno) << std::endl;
@@ -70,7 +71,7 @@ class DomainSocketSocket : public UnixDomainSocket {
           }
 
           if (bytes_wrote == 0) {
-            std::clog "Server dropped connection! L" << std:: endl;
+            std::clog << "Server dropped connection! L" << std:: endl;
             exit(-2);
           }
 
@@ -79,4 +80,4 @@ class DomainSocketSocket : public UnixDomainSocket {
         }
       }
     }
-}
+};

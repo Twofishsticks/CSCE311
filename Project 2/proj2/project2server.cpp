@@ -13,12 +13,12 @@
 
 #include<string>
 #include<iostream>
-using std::string
+using std::string;
 class UnixDomainSocket {
 
   public:
     explicit UnixDomainSocket(const char *sock_path) {
-      sock_path_ = string(sock_path);
+      string sock_path_ = string(sock_path);
       sock_add_ = {}; // cool struct thing
       sock_add_.sun_family = AF_UNIX; // set to UNIX socket type
 
@@ -29,7 +29,7 @@ class UnixDomainSocket {
     }
 
   protected:
-    std::sockaddr_un sock_add_; //sock add from sys/un.h
+    sockaddr_un sock_add_; //sock add from sys/un.h
     string sock_path;           // string is *char
 };
 
@@ -43,18 +43,18 @@ class DomainSocketServer : public UnixDomainSocket {
         int client_req_sock_fd; // client connect request to sock_fd
 
         // making the socket
-        sock_fd = socket(AFF_UNIX, SOCK_STREAM, 0);
+        sock_fd = socket(AF_UNIX, SOCK_STREAM, 0);
         if (sock_fd < 0) { // error check
           std::cerr << strerror(errno) << std::endl;
           exit(-1);
         }
 
-        unlink(socket_path_.c_str()); // delete file if it exists
+        unlink(sock_path.c_str()); // delete file if it exists
                                       // UNIX style tho, non-portable
         // bind socket to server
         int success = bind(sock_fd,
                           reinterpret_cast<const sockaddr*>(&sock_add_),
-                          size_of(sock_add_));
+                          sizeof(sock_add_));
       if (success < 0) { // error check
         std::cerr << strerror(errno) << std::endl;
         exit(-1);
@@ -112,4 +112,4 @@ class DomainSocketServer : public UnixDomainSocket {
         exit(-1);
       }
       }
-}
+};
