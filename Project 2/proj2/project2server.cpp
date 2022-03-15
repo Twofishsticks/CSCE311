@@ -37,7 +37,6 @@ class DomainSocketServer : public UnixDomainSocket {
   public:
     using ::UnixDomainSocket::UnixDomainSocket;
 
-
       void RunServer() const {
         int sock_fd;  // file descriptor
         int client_req_sock_fd; // client connect request to sock_fd
@@ -111,11 +110,15 @@ class DomainSocketServer : public UnixDomainSocket {
         std::cerr << strerror(errno) << std::endl;
         exit(-1);
       }
-      }
+    }
 };
 
 // handle everything in here
 // arg 1 = domain socket name
 int main (int argc, char *argv[]) {
-
+  if (argc != 2) {
+    return 1;
+  }
+  DomainSocketServer server = DomainSocketServer(argv[1]);
+  server.RunServer();
 }

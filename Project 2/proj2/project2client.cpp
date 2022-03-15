@@ -14,7 +14,6 @@
 using std::string;
 
 class UnixDomainSocket {
-
   public:
     explicit UnixDomainSocket(const char *sock_path) {
       string sock_path_ = string(sock_path);
@@ -26,12 +25,10 @@ class UnixDomainSocket {
               sizeof(sock_add_.sun_path)-2); // -2 checks for starting or
                                              // ending zeros
     }
-
   protected:
     sockaddr_un sock_add_; //sock add from sys/un.h
     string sock_path;           // string is *char
 };
-
 class DomainSocketSocket : public UnixDomainSocket {
   public :
     using ::UnixDomainSocket::UnixDomainSocket;
@@ -43,7 +40,6 @@ class DomainSocketSocket : public UnixDomainSocket {
         std::cerr << strerror(errno) << std::endl;
         exit(-1);
       }
-
       // connect to socket
       int success = connect(socket_fd,
                             reinterpret_cast<const sockaddr*>(&sock_add_),
@@ -52,7 +48,6 @@ class DomainSocketSocket : public UnixDomainSocket {
         std::cerr << strerror(errno) << std::endl;
         exit(-1);
       }
-
       // write to socket
       ssize_t kWrite_buffer_size = 64;
       char write_buffer[kWrite_buffer_size];
@@ -69,12 +64,10 @@ class DomainSocketSocket : public UnixDomainSocket {
             std::cerr << strerror(errno) << std::endl;
             exit(-1);
           }
-
           if (bytes_wrote == 0) {
             std::clog << "Server dropped connection! L" << std:: endl;
             exit(-2);
           }
-
           std::cin.getline(write_buffer, kWrite_buffer_size);
 
         }
@@ -87,7 +80,13 @@ class DomainSocketSocket : public UnixDomainSocket {
 // arg 2 = file to search through
 // arg 3 = what to search
 int main (int argc, char *argv[]) {
-
-
-  // on connection, write 
+  if (argc != 4) {
+    return 1;
+  }
+  string domainName = argv[1];
+  string fileName = argv[2];
+  string searchItem = argv[3];
+  DomainSocketSocket client = DomainSocketSocket(argv[1]);
+  client.RunClient();
+  // on connection, write
 }
