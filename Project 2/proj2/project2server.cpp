@@ -10,10 +10,13 @@
 #include<cstddef> // size_t
 #include<cstdlib> // exit
 #include<cstring> //strncpy
-
+#include<filesystem> // for looking for file
 #include<string>
 #include<iostream>
 using std::string;
+using std::endl;
+using std::cout;
+using std::filesystem::recursive_directory_iterator;
 class UnixDomainSocket {
 
   public:
@@ -40,17 +43,18 @@ class DomainSocketServer : public UnixDomainSocket {
       void RunServer() const {
         int sock_fd;  // file descriptor
         int client_req_sock_fd; // client connect request to sock_fd
-
         // making the socket
+        cout << "server run" << endl;
         sock_fd = socket(AF_UNIX, SOCK_STREAM, 0);
         if (sock_fd < 0) { // error check
           std::cerr << strerror(errno) << std::endl;
           exit(-1);
         }
-
+        cout << "sock_fd" << endl;
         unlink(sock_path.c_str()); // delete file if it exists
                                       // UNIX style tho, non-portable
         // bind socket to server
+        cout << "unlink" << endl;
         int success = bind(sock_fd,
                           reinterpret_cast<const sockaddr*>(&sock_add_),
                           sizeof(sock_add_));
@@ -58,9 +62,10 @@ class DomainSocketServer : public UnixDomainSocket {
         std::cerr << strerror(errno) << std::endl;
         exit(-1);
       }
-
+      cout << "binding" << endl;
       // listen for client
-      size_t kMax_client_conns = 5; // may need to change this to "n-1"
+      size_t kMax_client_conns = 1; // may need to change this to "n-1"
+      cout << "starting listen" << endl;
       success = listen(sock_fd, kMax_client_conns);
 
       if (success < 0) { // error check
@@ -73,13 +78,15 @@ class DomainSocketServer : public UnixDomainSocket {
       int bytes_read;
 
       // look for connector
+      cout << "beginnning while loop" << endl;
       while (true) {
         client_req_sock_fd = accept(sock_fd, nullptr, nullptr);
+        cout << "accept" << endl;
         if (client_req_sock_fd < 0) { // error check
           std::cerr << strerror(errno) << std::endl;
           continue;
         }
-      }
+
 
       std::cout << "Client connected \n";
 
@@ -90,10 +97,9 @@ class DomainSocketServer : public UnixDomainSocket {
       // loop until empty input
       while (bytes_read > 0) {
         if (strcmp(read_buffer, kKill_msg) == 0) {
-          std::cout << "Server shutted down... bwomp bwomp" << std::endl;
-
+          std::cout << "Client has disconnected" << std::endl;
           bytes_read = 0;
-          break;
+          return;
         }
 
         std::cout << "read" << bytes_read << "bytes: ";
@@ -110,6 +116,17 @@ class DomainSocketServer : public UnixDomainSocket {
         std::cerr << strerror(errno) << std::endl;
         exit(-1);
       }
+    }
+    };
+
+    bool findFile(string fileName) {
+      string path = "./dat";
+      for (const auto & file : recursive_directory_iterator(path)) {
+        if (file.path().compare(fileName) == 0) {
+          return true;
+        }
+      }
+      return false;
     }
 };
 

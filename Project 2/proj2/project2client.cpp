@@ -15,8 +15,11 @@ using std::string;
 
 class UnixDomainSocket {
   public:
-    explicit UnixDomainSocket(const char *sock_path) {
+    explicit UnixDomainSocket(const char *sock_path, string filename, string
+                              searchitem) {
       string sock_path_ = string(sock_path);
+      fileName = filename;
+      searchItem = searchitem;
       sock_add_ = {}; // cool struct thing
       sock_add_.sun_family = AF_UNIX; // set to UNIX socket type
 
@@ -26,6 +29,8 @@ class UnixDomainSocket {
                                              // ending zeros
     }
   protected:
+    string fileName;
+    string searchItem;
     sockaddr_un sock_add_; //sock add from sys/un.h
     string sock_path;           // string is *char
 };
@@ -59,7 +64,7 @@ class DomainSocketSocket : public UnixDomainSocket {
             std::cin.clear();
           }
           ssize_t bytes_wrote = write(socket_fd, write_buffer, std::cin.gcount());
-          std::cout << "sent" << std::cin.gcount() << " bytes" << std::endl;
+          std::cout << "sent " << std::cin.gcount() << " bytes." << std::endl;
           if (bytes_wrote < 0) {
             std::cerr << strerror(errno) << std::endl;
             exit(-1);
@@ -86,7 +91,7 @@ int main (int argc, char *argv[]) {
   string domainName = argv[1];
   string fileName = argv[2];
   string searchItem = argv[3];
-  DomainSocketSocket client = DomainSocketSocket(argv[1]);
+  DomainSocketSocket client = DomainSocketSocket(argv[1], argv[2], argv[3]);
   client.RunClient();
   // on connection, write
 }
