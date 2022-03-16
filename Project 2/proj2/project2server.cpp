@@ -4,6 +4,7 @@
 #include<sys/socket.h>
 #include<sys/un.h>
 #include<unistd.h>
+#include<sys/sysinfo.h>
 
 #include<cassert> // assert
 #include<cerrno> // errno
@@ -13,6 +14,8 @@
 #include<filesystem> // for looking for file
 #include<string>
 #include<iostream>
+#include<fstream>
+
 using std::string;
 using std::endl;
 using std::cout;
@@ -44,17 +47,17 @@ class DomainSocketServer : public UnixDomainSocket {
         int sock_fd;  // file descriptor
         int client_req_sock_fd; // client connect request to sock_fd
         // making the socket
-        cout << "server run" << endl;
+        //cout << "server run" << endl;
         sock_fd = socket(AF_UNIX, SOCK_STREAM, 0);
         if (sock_fd < 0) { // error check
           std::cerr << strerror(errno) << std::endl;
           exit(-1);
         }
-        cout << "sock_fd" << endl;
+        //cout << "sock_fd" << endl;
         unlink(sock_path.c_str()); // delete file if it exists
                                       // UNIX style tho, non-portable
         // bind socket to server
-        cout << "unlink" << endl;
+        //cout << "unlink" << endl;
         int success = bind(sock_fd,
                           reinterpret_cast<const sockaddr*>(&sock_add_),
                           sizeof(sock_add_));
@@ -62,10 +65,10 @@ class DomainSocketServer : public UnixDomainSocket {
         std::cerr << strerror(errno) << std::endl;
         exit(-1);
       }
-      cout << "binding" << endl;
+      //cout << "binding" << endl;
       // listen for client
-      size_t kMax_client_conns = 1; // may need to change this to "n-1"
-      cout << "starting listen" << endl;
+      size_t kMax_client_conns = get_nprocs_conf();
+      //cout << "starting listen" << endl;
       success = listen(sock_fd, kMax_client_conns);
 
       if (success < 0) { // error check
@@ -78,13 +81,16 @@ class DomainSocketServer : public UnixDomainSocket {
       int bytes_read;
 
       // look for connector
-      cout << "beginnning while loop" << endl;
+      //cout << "beginnning while loop" << endl;
       while (true) {
         client_req_sock_fd = accept(sock_fd, nullptr, nullptr);
-        cout << "accept" << endl;
+        //cout << "accept" << endl;
         if (client_req_sock_fd < 0) { // error check
           std::cerr << strerror(errno) << std::endl;
           continue;
+        } else {
+          cout << "SERVER STARTED" << endl;
+          cout << "\t MAX CLIENTS: " << kMax_client_conns;
         }
 
 
@@ -94,6 +100,7 @@ class DomainSocketServer : public UnixDomainSocket {
       bytes_read = read(client_req_sock_fd, read_buffer, kRead_buffer_size);
       const char kKill_msg[] = "quit";
 
+      // All of this is for sending/recieving messages
       // loop until empty input
       while (bytes_read > 0) {
         if (strcmp(read_buffer, kKill_msg) == 0) {
@@ -102,11 +109,13 @@ class DomainSocketServer : public UnixDomainSocket {
           return;
         }
 
-        std::cout << "read" << bytes_read << "bytes: ";
+        std::cout << "read " << bytes_read << " bytes: ";
         std::cout.write(read_buffer, bytes_read) << std::endl;
 
         bytes_read = read(client_req_sock_fd, read_buffer, kRead_buffer_size);
       }
+      //
+      //string finderFile =
 
       if (bytes_read == 0) {
         std::cout << "Client DC-ed" << std::endl;
@@ -124,6 +133,17 @@ class DomainSocketServer : public UnixDomainSocket {
       for (const auto & file : recursive_directory_iterator(path)) {
         if (file.path().compare(fileName) == 0) {
           return true;
+        }
+      }
+      return false;
+    }
+    bool findEach(string fileName, string searchItem) {
+      string line;
+      string fullFile = "./dat" + fileName;
+      std::ifstream gigaFile(fullFile);
+      while (getline(gigaFile,line)) {
+        if (line.find(searchItem)!= string::npos) {
+          cout << line << endl;
         }
       }
       return false;

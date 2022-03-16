@@ -12,7 +12,8 @@
 #include<string>
 #include<iostream>
 using std::string;
-
+using std::cout;
+using std::endl;
 class UnixDomainSocket {
   public:
     explicit UnixDomainSocket(const char *sock_path, string filename, string
@@ -56,6 +57,7 @@ class DomainSocketSocket : public UnixDomainSocket {
       // write to socket
       ssize_t kWrite_buffer_size = 64;
       char write_buffer[kWrite_buffer_size];
+      // all this is for sending messages, we want to send only one
       //send it
       while(true) {
         std::cin.getline(write_buffer, kWrite_buffer_size);
@@ -77,6 +79,7 @@ class DomainSocketSocket : public UnixDomainSocket {
 
         }
       }
+      //
     }
 };
 
