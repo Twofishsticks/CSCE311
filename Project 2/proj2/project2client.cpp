@@ -57,7 +57,7 @@ class DomainSocketSocket : public UnixDomainSocket {
       // write to socket
       ssize_t kWrite_buffer_size = 64;
       char write_buffer[kWrite_buffer_size];
-      // all this is for sending messages, we want to send only one
+      /* all this is for sending messages, we want to send only one
       //send it
       while(true) {
         std::cin.getline(write_buffer, kWrite_buffer_size);
@@ -79,7 +79,11 @@ class DomainSocketSocket : public UnixDomainSocket {
 
         }
       }
-      //
+      */
+      send(socket_fd, fileName.data(), fileName.size(), 0); // send filename
+      send(socket_fd, searchItem.data(), searchItem.size(), 0);
+      //ssize_t bytes_wrote = write(socket_fd, write_buffer, std::cin.gcount());
+      //std::cout << "sent " << std::cin.gcount() << " bytes." << std::endl;
     }
 };
 

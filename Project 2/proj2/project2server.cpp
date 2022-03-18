@@ -5,7 +5,9 @@
 #include<sys/un.h>
 #include<unistd.h>
 #include<sys/sysinfo.h>
+#include <stdio.h>
 
+#include<algorithm>
 #include<cassert> // assert
 #include<cerrno> // errno
 #include<cstddef> // size_t
@@ -14,6 +16,7 @@
 #include<filesystem> // for looking for file
 #include<string>
 #include<iostream>
+#include<sstream>
 #include<fstream>
 
 using std::string;
@@ -43,7 +46,7 @@ class DomainSocketServer : public UnixDomainSocket {
   public:
     using ::UnixDomainSocket::UnixDomainSocket;
 
-      void RunServer() const {
+      void RunServer() {
         int sock_fd;  // file descriptor
         int client_req_sock_fd; // client connect request to sock_fd
         // making the socket
@@ -90,7 +93,7 @@ class DomainSocketServer : public UnixDomainSocket {
           continue;
         } else {
           cout << "SERVER STARTED" << endl;
-          cout << "\t MAX CLIENTS: " << kMax_client_conns;
+          std::clog << "\t MAX CLIENTS: " << kMax_client_conns << endl;
         }
 
 
@@ -100,7 +103,6 @@ class DomainSocketServer : public UnixDomainSocket {
       bytes_read = read(client_req_sock_fd, read_buffer, kRead_buffer_size);
       const char kKill_msg[] = "quit";
 
-      // All of this is for sending/recieving messages
       // loop until empty input
       while (bytes_read > 0) {
         if (strcmp(read_buffer, kKill_msg) == 0) {
@@ -109,17 +111,43 @@ class DomainSocketServer : public UnixDomainSocket {
           return;
         }
 
-        std::cout << "read " << bytes_read << " bytes: ";
-        std::cout.write(read_buffer, bytes_read) << std::endl;
+        //std::cout << "read " << bytes_read << " bytes: ";
+        // giga workaround
+        std::ostringstream dontmesswiththecode;
+        dontmesswiththecode.write(read_buffer, bytes_read) << std::endl;
+        string fileSearch = dontmesswiththecode.str(); // file + \n
+        fileSearch.erase(std::remove(fileSearch.begin(), fileSearch.end(), '\n'),
+                        fileSearch.end());
+        //cout << fileSearch;
+        if(!findFile(fileSearch)) {
+          cout << "INVALID FILE" << endl;
+          bytes_read = read(client_req_sock_fd, read_buffer, kRead_buffer_size);
+          bytes_read = read(client_req_sock_fd, read_buffer, kRead_buffer_size);
+          close(client_req_sock_fd);
+          return;
+        };
+        std::cout << "found file"<< endl;
+        /*
+        std::cout << fileSearch << "fileName"<<endl;
+        dontmesswiththecode.str("");
+        */
 
+        //std::cout << "read " << bytes_read << " bytes: ";
+        bytes_read = read(client_req_sock_fd, read_buffer, kRead_buffer_size);
+        dontmesswiththecode.write(read_buffer, bytes_read) << std::endl;
+        string searchItem = dontmesswiththecode.str(); // file + \n
+        searchItem.erase(std::remove(searchItem.begin(), searchItem.end(), '\n'),
+                        searchItem.end());
+        findEach(fileSearch, searchItem);
+        /*
+        std::cout << searchItem << "searchItem"<<endl;
+        dontmesswiththecode.str("");
+        */
         bytes_read = read(client_req_sock_fd, read_buffer, kRead_buffer_size);
       }
-      //
-      //string finderFile =
 
       if (bytes_read == 0) {
-        std::cout << "Client DC-ed" << std::endl;
-
+        std::cout << "Client disconnected" << std::endl;
         close(client_req_sock_fd);
       } else if (bytes_read < 0) {
         std::cerr << strerror(errno) << std::endl;
@@ -130,23 +158,32 @@ class DomainSocketServer : public UnixDomainSocket {
 
     bool findFile(string fileName) {
       string path = "./dat";
+      string fullFile = "./dat/" + (fileName) ;
+      //cout << fullFile << endl << endl;
       for (const auto & file : recursive_directory_iterator(path)) {
-        if (file.path().compare(fileName) == 0) {
+        //cout << file.path() << " vs " << fullFile << endl;
+        if (file.path().compare(fullFile) == 0) {
           return true;
         }
       }
       return false;
     }
     bool findEach(string fileName, string searchItem) {
+      bool anything = false;
+      int bytes_sent = 0;
       string line;
-      string fullFile = "./dat" + fileName;
+      string fullFile = "./dat/" + fileName;
+
       std::ifstream gigaFile(fullFile);
       while (getline(gigaFile,line)) {
-        if (line.find(searchItem)!= string::npos) {
-          cout << line << endl;
+        //cout << line << endl;
+        if (line.find(searchItem)) {
+          anything = true;
+          cout << line << << endl;
         }
       }
-      return false;
+      cout << "bytes sent: " << bytes_sent;
+      return anything;
     }
 };
 
