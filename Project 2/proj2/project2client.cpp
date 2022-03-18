@@ -84,6 +84,7 @@ class DomainSocketSocket : public UnixDomainSocket {
       send(socket_fd, searchItem.data(), searchItem.size(), 0);
       //ssize_t bytes_wrote = write(socket_fd, write_buffer, std::cin.gcount());
       //std::cout << "sent " << std::cin.gcount() << " bytes." << std::endl;
+      
     }
 };
 

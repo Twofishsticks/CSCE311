@@ -118,7 +118,7 @@ class DomainSocketServer : public UnixDomainSocket {
         string fileSearch = dontmesswiththecode.str(); // file + \n
         fileSearch.erase(std::remove(fileSearch.begin(), fileSearch.end(), '\n'),
                         fileSearch.end());
-        //cout << fileSearch;
+
         if(!findFile(fileSearch)) {
           cout << "INVALID FILE" << endl;
           bytes_read = read(client_req_sock_fd, read_buffer, kRead_buffer_size);
@@ -126,23 +126,20 @@ class DomainSocketServer : public UnixDomainSocket {
           close(client_req_sock_fd);
           return;
         };
-        std::cout << "found file"<< endl;
-        /*
-        std::cout << fileSearch << "fileName"<<endl;
-        dontmesswiththecode.str("");
-        */
+        //std::cout << "found file"<< endl;
 
         //std::cout << "read " << bytes_read << " bytes: ";
+        dontmesswiththecode.str("");
         bytes_read = read(client_req_sock_fd, read_buffer, kRead_buffer_size);
         dontmesswiththecode.write(read_buffer, bytes_read) << std::endl;
         string searchItem = dontmesswiththecode.str(); // file + \n
+        cout << searchItem << "here" << endl;
         searchItem.erase(std::remove(searchItem.begin(), searchItem.end(), '\n'),
                         searchItem.end());
-        findEach(fileSearch, searchItem);
-        /*
-        std::cout << searchItem << "searchItem"<<endl;
+        findEach(fileSearch, searchItem, sock_fd, read_buffer);
+        //std::cout << searchItem << "searchItem"<<endl;
         dontmesswiththecode.str("");
-        */
+
         bytes_read = read(client_req_sock_fd, read_buffer, kRead_buffer_size);
       }
 
@@ -156,7 +153,7 @@ class DomainSocketServer : public UnixDomainSocket {
     }
     };
 
-    bool findFile(string fileName) {
+    bool findFile(string fileName) { // works
       string path = "./dat";
       string fullFile = "./dat/" + (fileName) ;
       //cout << fullFile << endl << endl;
@@ -168,22 +165,22 @@ class DomainSocketServer : public UnixDomainSocket {
       }
       return false;
     }
-    bool findEach(string fileName, string searchItem) {
-      bool anything = false;
+
+
+    void findEach(string fileName, string searchItem, int socket_fd, char* write_buffer) {
       int bytes_sent = 0;
       string line;
       string fullFile = "./dat/" + fileName;
-
       std::ifstream gigaFile(fullFile);
       while (getline(gigaFile,line)) {
         //cout << line << endl;
-        if (line.find(searchItem)) {
-          anything = true;
-          cout << line << << endl;
+        if (strstr(line.c_str(), searchItem.c_str())) {
+          bytes_sent = write(socket_fd, write_buffer, std::cin.gcount());
+          bytes_sent+=std::cin.gcount();
+          cout << line <<endl;
         }
       }
       cout << "bytes sent: " << bytes_sent;
-      return anything;
     }
 };
 
