@@ -70,7 +70,7 @@ class DomainSocketServer : public UnixDomainSocket {
       }
       //cout << "binding" << endl;
       // listen for client
-      size_t kMax_client_conns = get_nprocs_conf();
+      int kMax_client_conns = get_nprocs_conf();
       //cout << "starting listen" << endl;
       success = listen(sock_fd, kMax_client_conns);
 
@@ -142,7 +142,7 @@ class DomainSocketServer : public UnixDomainSocket {
       }
 
       if (bytes_read == 0) {
-        std::cout << "Client disconnected" << std::endl;
+        std::cout << "\nClient disconnected" << std::endl;
         close(client_req_sock_fd);
       } else if (bytes_read < 0) {
         std::cerr << strerror(errno) << std::endl;
@@ -191,4 +191,5 @@ int main (int argc, char *argv[]) {
   }
   DomainSocketServer server = DomainSocketServer(argv[1]);
   server.RunServer();
+  return 0;
 }

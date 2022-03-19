@@ -61,6 +61,7 @@ class DomainSocketSocket : public UnixDomainSocket {
         std::cerr << strerror(errno) << std::endl;
         exit(-1);
       }
+      cout << "SERVER CONNECTION ACCEPTED"<< endl;
       // write to socket
       ssize_t kWrite_buffer_size = 64 ;
       char write_buffer[kWrite_buffer_size];
@@ -149,4 +150,5 @@ int main (int argc, char *argv[]) {
   DomainSocketSocket client = DomainSocketSocket(argv[1], argv[2], argv[3]);
   client.RunClient();
   // on connection, write
+  return 0;
 }
