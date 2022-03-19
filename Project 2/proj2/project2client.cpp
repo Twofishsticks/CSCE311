@@ -82,9 +82,20 @@ class DomainSocketSocket : public UnixDomainSocket {
       */
       send(socket_fd, fileName.data(), fileName.size(), 0); // send filename
       send(socket_fd, searchItem.data(), searchItem.size(), 0);
+      int bytes_read = 0;
+      int bytes_read_real=0;
+      bytes_read = read(socket_fd, write_buffer, kWrite_buffer_size);
+      bytes_read_real += bytes_read;
+      while (bytes_read > 0) {
+        //std::cout << "read " << bytes_read << " bytes: ";
+        std::cout.write(write_buffer, bytes_read) << std::endl;
+
+        bytes_read = read(socket_fd, write_buffer, kWrite_buffer_size);
+      }
+      std::cout << "sent " << bytes_read_real << endl;
       //ssize_t bytes_wrote = write(socket_fd, write_buffer, std::cin.gcount());
       //std::cout << "sent " << std::cin.gcount() << " bytes." << std::endl;
-      
+
     }
 };
 

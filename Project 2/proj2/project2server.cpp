@@ -79,7 +79,7 @@ class DomainSocketServer : public UnixDomainSocket {
         exit(-1);
       }
 
-      const size_t kRead_buffer_size = 32; // again, change this
+      const size_t kRead_buffer_size = 64; // again, change this
       char read_buffer[kRead_buffer_size];
       int bytes_read;
 
@@ -121,8 +121,6 @@ class DomainSocketServer : public UnixDomainSocket {
 
         if(!findFile(fileSearch)) {
           cout << "INVALID FILE" << endl;
-          bytes_read = read(client_req_sock_fd, read_buffer, kRead_buffer_size);
-          bytes_read = read(client_req_sock_fd, read_buffer, kRead_buffer_size);
           close(client_req_sock_fd);
           return;
         };
@@ -133,10 +131,10 @@ class DomainSocketServer : public UnixDomainSocket {
         bytes_read = read(client_req_sock_fd, read_buffer, kRead_buffer_size);
         dontmesswiththecode.write(read_buffer, bytes_read) << std::endl;
         string searchItem = dontmesswiththecode.str(); // file + \n
-        cout << searchItem << "here" << endl;
+        //cout << searchItem << "here" << endl;
         searchItem.erase(std::remove(searchItem.begin(), searchItem.end(), '\n'),
                         searchItem.end());
-        findEach(fileSearch, searchItem, sock_fd, read_buffer);
+        findEach(fileSearch, searchItem, client_req_sock_fd, read_buffer);
         //std::cout << searchItem << "searchItem"<<endl;
         dontmesswiththecode.str("");
 
@@ -175,9 +173,10 @@ class DomainSocketServer : public UnixDomainSocket {
       while (getline(gigaFile,line)) {
         //cout << line << endl;
         if (strstr(line.c_str(), searchItem.c_str())) {
-          bytes_sent = write(socket_fd, write_buffer, std::cin.gcount());
-          bytes_sent+=std::cin.gcount();
-          cout << line <<endl;
+          line+="\n"; // change this
+          bytes_sent += send(socket_fd, line.data(), line.size(), 0);
+          //bytes_sent += write(socket_fd, write_buffer, line.length()-1);
+          //cout << line <<endl;
         }
       }
       cout << "bytes sent: " << bytes_sent;
