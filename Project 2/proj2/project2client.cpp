@@ -87,12 +87,16 @@ class DomainSocketSocket : public UnixDomainSocket {
       bytes_read = read(socket_fd, write_buffer, kWrite_buffer_size);
       bytes_read_real += bytes_read;
       while (bytes_read > 0) {
+
         //std::cout << "read " << bytes_read << " bytes: ";
         std::cout.write(write_buffer, bytes_read) << std::endl;
-
+        if (bytes_read < 64) {
+          break;
+        }
         bytes_read = read(socket_fd, write_buffer, kWrite_buffer_size);
+        bytes_read_real += bytes_read;
       }
-      std::cout << "sent " << bytes_read_real << endl;
+      std::cout << "Recieved " << bytes_read_real << endl;
       //ssize_t bytes_wrote = write(socket_fd, write_buffer, std::cin.gcount());
       //std::cout << "sent " << std::cin.gcount() << " bytes." << std::endl;
 
