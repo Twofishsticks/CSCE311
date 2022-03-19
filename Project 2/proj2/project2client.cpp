@@ -2,6 +2,9 @@
 #include<sys/socket.h>
 #include<sys/un.h>
 #include<unistd.h>
+#include<unistd.h>
+#include<sys/sysinfo.h>
+#include <stdio.h>
 
 #include<cassert> // assert
 #include<cerrno> // errno
@@ -11,6 +14,10 @@
 
 #include<string>
 #include<iostream>
+#include<iostream>
+#include<sstream>
+#include<fstream>
+
 using std::string;
 using std::cout;
 using std::endl;
@@ -55,7 +62,7 @@ class DomainSocketSocket : public UnixDomainSocket {
         exit(-1);
       }
       // write to socket
-      ssize_t kWrite_buffer_size = 64;
+      ssize_t kWrite_buffer_size = 64 ;
       char write_buffer[kWrite_buffer_size];
       /* all this is for sending messages, we want to send only one
       //send it
@@ -82,21 +89,46 @@ class DomainSocketSocket : public UnixDomainSocket {
       */
       send(socket_fd, fileName.data(), fileName.size(), 0); // send filename
       send(socket_fd, searchItem.data(), searchItem.size(), 0);
+      std::ostringstream dontmesswiththecode;
       int bytes_read = 0;
       int bytes_read_real=0;
+      string temp;
       bytes_read = read(socket_fd, write_buffer, kWrite_buffer_size);
       bytes_read_real += bytes_read;
       while (bytes_read > 0) {
 
         //std::cout << "read " << bytes_read << " bytes: ";
-        std::cout.write(write_buffer, bytes_read) << std::endl;
-        if (bytes_read < 64) {
+        dontmesswiththecode.write(write_buffer, bytes_read) << std::endl;
+        temp+=dontmesswiththecode.str();
+        dontmesswiththecode.str("");
+        if (bytes_read < kWrite_buffer_size) {
           break;
         }
         bytes_read = read(socket_fd, write_buffer, kWrite_buffer_size);
         bytes_read_real += bytes_read;
       }
-      std::cout << "Recieved " << bytes_read_real << endl;
+      //cout << temp<< endl;
+      string newline = "\n";
+      size_t found;
+      while (true) { // replace all newline with nothing
+        found = temp.find(newline);
+        if (found != string::npos) {
+          temp.replace (found, newline.length(), "");
+        } else {
+          break;
+        }
+      }
+      string delimiter = "PEEPEEPOOPOO";
+      while (true) { // replace all delimiters with newline
+        found = temp.find(delimiter);
+        if (found != string::npos) {
+          temp.replace (found, delimiter.length(), "\n");
+        } else {
+          break;
+        }
+      }
+      cout << temp << endl;
+      std::cout << "Recieved " << bytes_read_real << " bytes"<< endl;
       //ssize_t bytes_wrote = write(socket_fd, write_buffer, std::cin.gcount());
       //std::cout << "sent " << std::cin.gcount() << " bytes." << std::endl;
 

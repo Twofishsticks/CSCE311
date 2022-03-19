@@ -173,7 +173,7 @@ class DomainSocketServer : public UnixDomainSocket {
       while (getline(gigaFile,line)) {
         //cout << line << endl;
         if (strstr(line.c_str(), searchItem.c_str())) {
-          line+="\n"; // change this
+          line+="PEEPEEPOOPOO"; // change this
           bytes_sent += send(socket_fd, line.data(), line.size(), 0);
           //bytes_sent += write(socket_fd, write_buffer, line.length()-1);
           //cout << line <<endl;
