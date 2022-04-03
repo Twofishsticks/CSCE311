@@ -1,4 +1,4 @@
-## Depends heavily on make dependency generation rules.
+# Depends heavily on make dependency generation rules.
 #
 
 # place compile-able source here

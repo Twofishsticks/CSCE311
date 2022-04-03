@@ -2,7 +2,7 @@
 //
 
 
-#include <shm_logger/inc/named_semaphore.h>
+#include <proj3/inc/named_semaphore.h>
 
 namespace wrappers {
 

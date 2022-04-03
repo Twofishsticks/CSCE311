@@ -3,9 +3,8 @@
 #ifndef SHM_LOGGER_INC_CONSUMER_H_
 #define SHM_LOGGER_INC_CONSUMER_H_
 
-
-#include <shm_logger/inc/named_semaphore.h>
-#include <shm_logger/inc/shm_store.h>
+#include <proj3/inc/shm_store.h>
+#include <proj3/inc/named_semaphore.h>
 
 #include <sys/mman.h>  // POSIX shared memory map
 #include <sys/unistd.h>  // Unix standard header (ftruncate)
