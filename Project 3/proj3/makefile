@@ -68,23 +68,15 @@ $(obj_dir)/%.o: src/%.cc
 $(obj_dir)/%.o: src/%.cc $(dep_dir)/%.d
 	$(compile.cc) $<
 
-#these only compile one at a time, why? uncomment this in/out to test code
-
 $(producer_exe) : $(producer_objs)
 	$(link.o)
 
 $(consumer_exe) : $(consumer_objs)
 	$(link.o)
 
-$(producer_exe) : $(producer_objs)
-	$(link.o)
+#figure out how to do this on make
+makeboth: $(producer_exe) $(consumer_exe)
 
-makeboth:
-	($consumer_exe) : $(consumer_objs)
-		$(link.o)
-
-	$(producer_exe) : $(producer_objs)
-		$(link.o)
 
 .PRECIOUS: $(dep_dir)/%.d
 $(dep_dir)/%.d: ;
@@ -96,3 +88,4 @@ $(dep_dir)/%.d: ;
 .PHONY: clean
 clean:
 	$(RM) -r $(obj_dir) $(dep_dir)
+	$(RM) text-client text-server

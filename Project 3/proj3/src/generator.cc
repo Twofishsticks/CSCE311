@@ -8,7 +8,6 @@
 
 
 // act as the "client"
-// name name
 int main(int argc, char* argv[]) {
   assert(argc == 3 && "./text-client dat/<text_file> \"<string_search>\"");
   char name1[] = "stringbean";

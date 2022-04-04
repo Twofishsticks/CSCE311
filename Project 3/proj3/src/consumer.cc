@@ -2,7 +2,7 @@
 //
 
 #include <proj3/inc/consumer.h>
-
+#include<iostream>
 
 namespace logger {
 
@@ -69,6 +69,7 @@ Consumer::~Consumer() {
 void Consumer::Consume(const char log_name[]) {
   // write any logs to file
   std::string msg;
+  std::cout << "SERVER STARTED" << std::endl;
   while (true) {
     shm_log_signal_.Down();  // block until occupied signal
     std::ofstream fout(log_name, std::ofstream::app);
