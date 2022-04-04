@@ -76,7 +76,7 @@ $(consumer_exe) : $(consumer_objs)
 	$(link.o)
 
 #figure out how to do this on make
-make: $(producer_exe) $(consumer_exe)
+makeboth: $(producer_exe) $(consumer_exe)
 
 
 .PRECIOUS: $(dep_dir)/%.d
@@ -89,4 +89,4 @@ $(dep_dir)/%.d: ;
 .PHONY: clean
 clean:
 	$(RM) -r $(obj_dir) $(dep_dir)
-	$(RM) text-client text-server
+	$(RM) text-client text-server temp.txt

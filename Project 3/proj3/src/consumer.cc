@@ -69,16 +69,28 @@ Consumer::~Consumer() {
 void Consumer::Consume(const char log_name[]) {
   // write any logs to file
   std::string msg;
+  std::ofstream outfile(log_name);
   std::cout << "SERVER STARTED" << std::endl;
   while (true) {
     shm_log_signal_.Down();  // block until occupied signal
 
     std::ofstream fout(log_name, std::ofstream::app);
 
-    fout << store_->buffer << '\n';  // write to file
+    fout << store_->buffer << '\n';  // write input to file
+
+    // read the input, determine target location
+
+    // write full file to temp file
+
 
     fout.close();
+    // say "closed, go away"
+
+
+    // break closes the server
+    //break; // testing purposes, delete later
   }
+    outfile.close();
 }
 
 

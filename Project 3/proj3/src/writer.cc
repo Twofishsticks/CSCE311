@@ -24,13 +24,13 @@ int main(int argc, char* argv[]) {
   ::signal(SIGINT, LoggerSigTermHandler);
 
   // build Consumer and start writing to file
-  char name1[] = "stringbean";
-  char name2[] = "broccoliandpeas";
+  char name1[] = "stringbean111";
+  char name2[] = "broccoliandpeas111";
   log_writer = new logger::Consumer(name1, name2);
 
   // Everything dealing with the client themselves is located in Consume
   log_writer->Consume("temp.txt");
-  
+
   return 0;
 }
 
