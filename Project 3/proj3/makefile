@@ -81,21 +81,6 @@ $(dep_dir)/%.d: ;
 
 -include $(deps)
 
-# my own clunky make code
-flags = -std=c++17  # compile with C++ 17 standard
-flags += -Wall  # compile with all warnings
-flags += -g  # produce debugging information
-link = $(cc) $(flags) -o
-compile = $(cc) $(flags) -c
-#figure out how to put makespecial in the normal make, otherwise it works
-makespecial: text-client text-server
-text-client: src/project2client.cpp
-	$(link) $@ $^
-text-server: src/project2server.cpp
-	$(link) $@ $^
-#end clunky
-
-
 .PHONY: clean
 clean:
 	$(RM) -r $(obj_dir) $(dep_dir)
