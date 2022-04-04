@@ -8,12 +8,10 @@ producer_srcs := generator.cc producer.cc producer.h named_semaphore.h named_sem
 
 # place final executable name here
 #
-consumer_exe := writer
-producer_exe := generator
+consumer_exe := text-server
+producer_exe := text-client
 
 inc_path := ..
-
-
 
 # compiler
 #
@@ -70,18 +68,31 @@ $(obj_dir)/%.o: src/%.cc
 $(obj_dir)/%.o: src/%.cc $(dep_dir)/%.d
 	$(compile.cc) $<
 
+#these only compile one at a time, why? uncomment this in/out to test code
+
+$(producer_exe) : $(producer_objs)
+	$(link.o)
+
 $(consumer_exe) : $(consumer_objs)
 	$(link.o)
 
 $(producer_exe) : $(producer_objs)
 	$(link.o)
 
+makeboth:
+	($consumer_exe) : $(consumer_objs)
+		$(link.o)
+
+	$(producer_exe) : $(producer_objs)
+		$(link.o)
+
 .PRECIOUS: $(dep_dir)/%.d
 $(dep_dir)/%.d: ;
 
 -include $(deps)
 
+
+
 .PHONY: clean
 clean:
 	$(RM) -r $(obj_dir) $(dep_dir)
-	$(RM) text-client text-server writer

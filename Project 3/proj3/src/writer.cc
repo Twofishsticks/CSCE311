@@ -13,18 +13,21 @@ void LoggerSigTermHandler(int sig);
 
 logger::Consumer* log_writer;
 
-
+// act as the "server"
+// name, name, file to write to
 int main(int argc, char* argv[]) {
-  assert(argc == 4
-    && "usage: consumer <shared_memory_name> <log_signal_mux_name> <log_file_name>");
+  assert(argc == 1 && "usage: ./text-server");
+
 
   // set SIGTERM signal handler to unlink shm
   ::signal(SIGTERM, LoggerSigTermHandler);
   ::signal(SIGINT, LoggerSigTermHandler);
 
   // build Consumer and start writing to file
-  log_writer = new logger::Consumer(argv[1], argv[2]);
-  log_writer->Consume(argv[3]);
+  char name1[] = "stringbean";
+  char name2[] = "broccoliandpeas";
+  log_writer = new logger::Consumer(name1, name2);
+  log_writer->Consume("temp.txt");
 
   return 0;
 }

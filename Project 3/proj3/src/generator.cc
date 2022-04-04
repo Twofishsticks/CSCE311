@@ -6,10 +6,14 @@
 #include <cstddef>
 #include <iostream>
 
-int main(int argc, char* argv[]) {
-  assert(argc == 3 && "producer <shared_mem_name> <log_mutex_name>");
 
-  logger::Producer log_writer(argv[1], argv[2]);
+// act as the "client"
+// name name
+int main(int argc, char* argv[]) {
+  assert(argc == 3 && "./text-client dat/<text_file> \"<string_search>\"");
+  char name1[] = "stringbean";
+  char name2[] = "broccoliandpeas";
+  logger::Producer log_writer(name1, name2);
 
   std::cout << "Sending: > ";
 
