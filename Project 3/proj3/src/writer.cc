@@ -27,8 +27,10 @@ int main(int argc, char* argv[]) {
   char name1[] = "stringbean";
   char name2[] = "broccoliandpeas";
   log_writer = new logger::Consumer(name1, name2);
-  log_writer->Consume("temp.txt");
 
+  // Everything dealing with the client themselves is located in Consume
+  log_writer->Consume("temp.txt");
+  
   return 0;
 }
 

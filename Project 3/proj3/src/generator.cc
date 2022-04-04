@@ -18,10 +18,12 @@ int main(int argc, char* argv[]) {
 
   const size_t kBuffer_size = 64;
   char buffer[kBuffer_size];
+
   std::cin.getline(buffer, kBuffer_size);
   buffer[std::cin.gcount() + 1] = '\n';
   std::string msg(buffer);
   std::cout << "Bytes read: " << std::cin.gcount() << std::endl;
+
   while (std::cin.gcount() == kBuffer_size - 1) {
     std::cin.clear();
     std::cin.getline(buffer, kBuffer_size);
@@ -30,6 +32,7 @@ int main(int argc, char* argv[]) {
     msg += buffer;
   }
   std::cout << "Sent: " << msg << std::endl;
+  
   log_writer.Produce(std::string(msg));
 
   return 0;

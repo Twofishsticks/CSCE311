@@ -3,6 +3,7 @@
 
 # place compile-able source here
 #
+
 consumer_srcs := writer.cc consumer.cc consumer.h named_semaphore.h named_semaphore.cc
 producer_srcs := generator.cc producer.cc producer.h named_semaphore.h named_semaphore.cc
 
@@ -75,7 +76,7 @@ $(consumer_exe) : $(consumer_objs)
 	$(link.o)
 
 #figure out how to do this on make
-makeboth: $(producer_exe) $(consumer_exe)
+make: $(producer_exe) $(consumer_exe)
 
 
 .PRECIOUS: $(dep_dir)/%.d

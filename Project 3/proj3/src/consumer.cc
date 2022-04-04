@@ -72,6 +72,7 @@ void Consumer::Consume(const char log_name[]) {
   std::cout << "SERVER STARTED" << std::endl;
   while (true) {
     shm_log_signal_.Down();  // block until occupied signal
+
     std::ofstream fout(log_name, std::ofstream::app);
 
     fout << store_->buffer << '\n';  // write to file
