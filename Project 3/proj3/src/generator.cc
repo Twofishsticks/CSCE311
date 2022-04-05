@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
   assert(argc == 3 && "./text-client dat/<text_file> \"<string_search>\"");
   char name1[] = "stringbean";
   char name2[] = "broccoliandpeas";
-  logger::Producer log_writer(name1, name2);
+  logger::Producer log_writer(name1, name2); //create shared memory location
 
   //std::cout << "Sending: > ";
 
@@ -20,32 +20,16 @@ int main(int argc, char* argv[]) {
   char buffer[kBuffer_size];
   std::string msg(buffer);
   std:: ifstream fileInput;
-  /* send one line, only reads the string
-  std::cin.getline(buffer, kBuffer_size);
-  buffer[std::cin.gcount() + 1] = '\n';
-  std::string msg(buffer);
-  std::cout << "Bytes read: " << std::cin.gcount() << std::endl;
 
-  // read a LOT of stuff, determined by buffer size
-  while (std::cin.gcount() == kBuffer_size - 1) {
-    std::cin.clear();
-    std::cin.getline(buffer, kBuffer_size);
-    std::cout << "Bytes read: " << std::cin.gcount() << std::endl;
-    buffer[std::cin.gcount() + 1] = '\0';
-    msg += buffer;
-  }
-  std::cout << "Sent: " << msg << std::endl;
-  // end reading sending string
-  */
-  //std::cout<<msg<<std::endl;
   msg = argv[1];
-  log_writer.Produce(std::string(msg));
-  // when match is found do # tab string newline as cout (from string)
+  log_writer.Produce(std::string(msg)); //send file path to server
   unsigned int currentline = 0;
   int numberline = 1;
   std::string line;
   std::string big;
   fileInput.open("temp.txt");
+  // NOTE: THREADLESS IMPLEMENTATION
+  // search though shared memory location for a match
   if (fileInput.is_open()) {
     while(getline(fileInput, line)) {
       currentline++;
@@ -55,13 +39,9 @@ int main(int argc, char* argv[]) {
       }
     }
   }
-  std::cout<< big;
+  std::cout<< big; // print all matches
 
 
-  //msg = argv[2];
-  //log_writer.Produce(std::string(msg)); // these work lol
-
-
-
+  remove("temp.txt"); // Destroy shared memory location
   return 0;
 }

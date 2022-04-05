@@ -84,13 +84,14 @@ void Consumer::Consume(const char log_name[]) {
 
 
     // read the targeting string
-
-    if (tempfile.is_open()) {
+    std::cout<< "\t MEMORY OPEN"<<std::endl;
+    if (tempfile.is_open()) { // open shared memory
       tempfile>>filename;
-      //std::cout<< filename <<"FILENAME" <<std::endl; // good string
+      std::cout<<"\tOPENING: "<< filename <<std::endl;
     } else {
       return; // say error?
     }
+
 
     //find the file
 
@@ -106,10 +107,12 @@ void Consumer::Consume(const char log_name[]) {
     }
     // break closes the server
     //break; // testing purposes, delete later
+    std::cout<<"\tFILE CLOSED"<<std::endl;
     initialfile.close();
   }
     tempfile.close();
     outfile.close();
+    std::cout<<"\tMEMORY CLOSED"<<std::endl;
 }
 
 

@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
   char name2[] = "broccoliandpeas";
   log_writer = new logger::Consumer(name1, name2);
 
-  // Everything dealing with the client themselves is located in Consume
+  // All parts of the server's function are located in consumer.cc
   log_writer->Consume("temp.txt");
 
   return 0;
