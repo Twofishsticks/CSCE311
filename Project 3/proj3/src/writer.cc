@@ -14,7 +14,6 @@ void LoggerSigTermHandler(int sig);
 logger::Consumer* log_writer;
 
 // act as the "server"
-// name, name, file to write to
 int main(int argc, char* argv[]) {
   assert(argc == 1 && "usage: ./text-server");
 
@@ -24,8 +23,8 @@ int main(int argc, char* argv[]) {
   ::signal(SIGINT, LoggerSigTermHandler);
 
   // build Consumer and start writing to file
-  char name1[] = "stringbean111";
-  char name2[] = "broccoliandpeas111";
+  char name1[] = "stringbean11";
+  char name2[] = "broccoliandpeas11";
   log_writer = new logger::Consumer(name1, name2);
 
   // Everything dealing with the client themselves is located in Consume

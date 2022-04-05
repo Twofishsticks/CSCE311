@@ -14,6 +14,7 @@
 #include <csignal>
 #include <cstddef>  // size_t
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <string>
