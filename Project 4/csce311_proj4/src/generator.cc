@@ -6,7 +6,7 @@
 #include <cstddef>
 #include <iostream>
 
-int main(/* int argc, char* argv[] */) {
+int main(int argc, char* argv[]) {
   logger::Producer log_writer;
 
   std::cout << "Sending: > ";
@@ -14,9 +14,10 @@ int main(/* int argc, char* argv[] */) {
   const size_t kBuffer_size = 32;
   char buffer[kBuffer_size];
 
-  std::cin.getline(buffer, kBuffer_size);
-  std::string msg(buffer);
-
+  //std::cin.getline(buffer, kBuffer_size);
+  std::string msg(argv[1]);
+  // should send the filename first
+  /*
   while (std::cin.fail()) {  // did not get to \n in getline
     std::cin.clear();  // reset fail bit
 
@@ -24,7 +25,7 @@ int main(/* int argc, char* argv[] */) {
 
     msg += std::string(buffer);
   }
-
+  */
   std::cout << "Sent: " << msg << std::endl;
   log_writer.Produce(msg);
 
