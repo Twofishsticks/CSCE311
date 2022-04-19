@@ -5,8 +5,8 @@
 
 #include <cstddef>
 #include <iostream>
-
-
+#include <filesystem>
+#include <fstream>
 // Deletes kLogger memory (calls destructor)
 void LoggerSigTermHandler(int sig);
 
@@ -30,6 +30,7 @@ int main(int argc, char* argv[]) {
 
 
 void LoggerSigTermHandler(int sig) {
-  if (sig == SIGTERM || sig == SIGINT)
+  if (sig == SIGTERM || sig == SIGINT) {
     delete log_writer;
+  }
 }

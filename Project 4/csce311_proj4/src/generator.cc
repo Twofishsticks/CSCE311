@@ -9,10 +9,10 @@
 int main(int argc, char* argv[]) {
   logger::Producer log_writer;
 
-  std::cout << "Sending: > ";
+  //std::cout << "Sending: > ";
 
-  const size_t kBuffer_size = 32;
-  char buffer[kBuffer_size];
+  //const size_t kBuffer_size = 32;
+  //char buffer[kBuffer_size];
 
   //std::cin.getline(buffer, kBuffer_size);
   std::string msg(argv[1]);
@@ -28,6 +28,8 @@ int main(int argc, char* argv[]) {
   */
   std::cout << "Sent: " << msg << std::endl;
   log_writer.Produce(msg);
+
+  //need to wait, then read the file
 
   return 0;
 }

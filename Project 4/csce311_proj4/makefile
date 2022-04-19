@@ -8,8 +8,8 @@ producer_srcs := generator.cc producer.cc producer.h named_semaphore.h named_sem
 
 # place final executable name here
 #
-consumer_exe := writer
-producer_exe := generator
+consumer_exe := text_server
+producer_exe := text_client
 
 inc_path := ..
 
@@ -84,5 +84,4 @@ makeboth : $(consumer_exe) $(producer_exe)
 
 .PHONY: clean
 clean:
-	$(RM) -r $(obj_dir) $(dep_dir)
-	$(RM) -r $(consumer_exe) $(producer_exe)
+	$(RM) -r $(obj_dir) $(dep_dir) $(consumer_exe) $(producer_exe) 
