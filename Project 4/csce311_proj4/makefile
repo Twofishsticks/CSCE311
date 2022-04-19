@@ -1,6 +1,6 @@
 # Depends heavily on make dependency generation rules.
 #
-
+make: makeboth
 # place compile-able source here
 #
 consumer_srcs := writer.cc consumer.cc consumer.h named_semaphore.h named_semaphore.cc
@@ -79,6 +79,7 @@ $(dep_dir)/%.d: ;
 
 -include $(deps)
 
+makeboth : $(consumer_exe) $(producer_exe)
 
 
 .PHONY: clean
