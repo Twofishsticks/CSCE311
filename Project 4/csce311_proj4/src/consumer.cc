@@ -63,6 +63,11 @@ void Consumer::Consume(const char log_file_name[]) {
     // map to transfer file pages in page cache
     char *buf_file_addr = static_cast<char *>(
       ::mmap(nullptr, buf_size, PROT_READ | PROT_WRITE, MAP_SHARED, buf_fd, 0));
+
+      //testing
+      std::cout << "buf_file_addr at line 64"<<buf_file_addr<<std::endl;
+      // buf_file_addr is what is sent from the consumer, changed later
+      
     if (buf_file_addr == MAP_FAILED)
       HandleError("Transfer file map");
     if (::close(buf_fd) < 0)
@@ -84,15 +89,25 @@ void Consumer::Consume(const char log_file_name[]) {
                                                      MAP_SHARED,
                                                      log_fd,
                                                      0));
+
+    std::cout << "log_file_addr at line 82 "<<log_file_addr<< std::endl;
+    // log_file_addr is what is inside the file
     if (log_file_addr == MAP_FAILED)
       HandleError("Log file map");
     if (::close(log_fd) < 0)
       HandleError("Log file map close");
 
-    // copy from transfer file to log file
+    // copy from transfer file to log file-
     for (long int i = 0; i < buf_size; ++i) {
       log_file_addr[log_size + i] = buf_file_addr[i];
     }
+
+    //testing
+    std::cout << "log_file_addr at line 94 "<<log_file_addr;
+    // log file is what's in log file + buf_file_addr
+    std::cout << "buf_file_addr at line 94: "<<buf_file_addr<<std::endl;
+    // buf_file_addr is what is sent from producer
+
 
     // update log file
     if (msync(log_file_addr, log_size + buf_size, MS_SYNC) < 0)
@@ -108,16 +123,33 @@ void Consumer::Consume(const char log_file_name[]) {
     if (::munmap(log_file_addr, log_size + buf_size))
       HandleError("Log file unmap");
 
-    // now have path in log.txt, transfer file is clear, everything is closed
-    // need to put down the chosen file into log.txt (hardcoded)
 
-    // signal producer that the file is ready
-    std::cout << "Press enter to signal";
-    std::cin.ignore();
+    //signal producer that the file is ready
+    //std::cout << "Press enter to signal";
+    //std::cin.ignore();
     log_sig_.Up();
-    break;
+
+    // copy from transfer file to log file-
+    for (long int i = 0; i < buf_size; ++i) {
+      log_file_addr[log_size + i] = buf_file_addr[i];
+    }
+    // update log file
+    if (msync(log_file_addr, log_size + buf_size, MS_SYNC) < 0)
+      HandleError("Synchronizing log file map");
+
+    // empty transfer file
+    if (::truncate(buf_file_name_, 0) < 0)
+      HandleError("Emptying transfer file");
+
+    break; // for testing
   }
 }
 
 
 }  // namespace logger
+
+/*
+things to note: buf_file_addr is the shared mem space: it gets tranferred from one array to another in both files
+so, use this to "move" data back and forth, semaphore for stop/go up=go, down = wait
+
+*/

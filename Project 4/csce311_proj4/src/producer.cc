@@ -38,6 +38,7 @@ std::tuple<int, off_t> OpenFile(const char file_name[], int flags) {
 
 }  // anonymous namespace
 
+//GENERATOR
 int Producer::Produce(const std::string& msg) {
   // open buffer file and get stats
   int buf_fd;
@@ -60,6 +61,8 @@ int Producer::Produce(const std::string& msg) {
                                                    MAP_SHARED,
                                                    buf_fd,
                                                    0));
+  std::cout << "buf_file_addr at line 57: "<<buf_file_addr<< std::endl;
+  // should be nothing: this only links the mmap
   if (buf_file_addr == MAP_FAILED)
     HandleError("Buffer file map");
   if (::close(buf_fd) < 0)
@@ -69,6 +72,9 @@ int Producer::Produce(const std::string& msg) {
   for (size_t i = 0; i < msg.length(); ++i)
     buf_file_addr[i] = msg[i];
   buf_file_addr[msg.length()] = '\n';
+
+  std::cout << "buf_file_addr at line 73: "<<buf_file_addr<< std::endl;
+  // buf_file_addr is what is sent from the producer, but NEEDS be changed
 
   // update transfer file
   if (msync(buf_file_addr, buf_size, MS_SYNC) < 0)
@@ -81,9 +87,15 @@ int Producer::Produce(const std::string& msg) {
   if (::munmap(buf_file_addr, msg.length() + 1))
     HandleError("Buffer file unmap");
 
-  // wait for consumer to finish
+
+  // wait for consumer to finish uploading the dat file to buf_file_addr
   log_sig_.Down();
-  std::cout << "waited";
+  // parse through log.txt OR buf_file_addr
+  for (long unsigned int i = 0; i < sizeof(buf_file_addr); ++i){
+    if (buf_file_addr[i]>=97 && buf_file_addr[i]<=122) {
+      buf_file_addr[i]-=32;
+    }
+  }
 
   return 0;
 }
