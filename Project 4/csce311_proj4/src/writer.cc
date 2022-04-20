@@ -7,6 +7,9 @@
 #include <iostream>
 #include <filesystem>
 #include <fstream>
+
+using std::cout;
+using std::endl;
 // Deletes kLogger memory (calls destructor)
 void LoggerSigTermHandler(int sig);
 
@@ -14,8 +17,8 @@ void LoggerSigTermHandler(int sig);
 logger::Consumer* log_writer;
 
 
-int main(int argc, char* argv[]) {
-  assert(argc == 2 && "usage: consumer <log_file_name>");
+int main(/*int argc, char* argv[]*/) {
+  //assert(argc == 2 && "usage: consumer <log_file_name>");
 
   // set SIGTERM signal handler to unlink shm
   ::signal(SIGTERM, LoggerSigTermHandler);
@@ -23,7 +26,9 @@ int main(int argc, char* argv[]) {
 
   // build Consumer and start writing to file
   log_writer = new logger::Consumer();
-  log_writer->Consume(argv[1]);
+  cout << "SERVER STARTED" << endl;
+  // see consumer.cc for documented steps
+  log_writer->Consume("log.txt");
 
   return 0;
 }

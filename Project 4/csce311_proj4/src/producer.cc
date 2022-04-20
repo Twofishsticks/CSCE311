@@ -81,6 +81,10 @@ int Producer::Produce(const std::string& msg) {
   if (::munmap(buf_file_addr, msg.length() + 1))
     HandleError("Buffer file unmap");
 
+  // wait for consumer to finish
+  log_sig_.Down();
+  std::cout << "waited";
+
   return 0;
 }
 

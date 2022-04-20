@@ -2,7 +2,10 @@
 //
 
 #include <csce311_proj4/inc/consumer.h>
+#include <iostream>
 
+using std::cout;
+using std::endl;
 
 namespace logger {
 
@@ -50,6 +53,7 @@ void Consumer::HandleError(const char msg[]) {
 void Consumer::Consume(const char log_file_name[]) {
   while (true) {
     log_sig_.Down();  // block until client ready
+    cout << "CLIENT REQUEST RECEIVED"<< endl;
 
     // open transfer file and get size
     int buf_fd;
@@ -85,7 +89,7 @@ void Consumer::Consume(const char log_file_name[]) {
     if (::close(log_fd) < 0)
       HandleError("Log file map close");
 
-    // copy from transfer file to log file (should use strncat)
+    // copy from transfer file to log file
     for (long int i = 0; i < buf_size; ++i) {
       log_file_addr[log_size + i] = buf_file_addr[i];
     }
@@ -103,6 +107,15 @@ void Consumer::Consume(const char log_file_name[]) {
       HandleError("Buffer file unmap");
     if (::munmap(log_file_addr, log_size + buf_size))
       HandleError("Log file unmap");
+
+    // now have path in log.txt, transfer file is clear, everything is closed
+    // need to put down the chosen file into log.txt (hardcoded)
+
+    // signal producer that the file is ready
+    std::cout << "Press enter to signal";
+    std::cin.ignore();
+    log_sig_.Up();
+    break;
   }
 }
 

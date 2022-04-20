@@ -26,8 +26,10 @@ int main(int argc, char* argv[]) {
     msg += std::string(buffer);
   }
   */
-  std::cout << "Sent: " << msg << std::endl;
-  log_writer.Produce(msg);
+  std::cout << "Sent: " << argv[1] << std::endl;
+  //see producer.cc for documented steps
+  // sent what needs to be written to the file chosen by writer.cc
+  log_writer.Produce(argv[1]);
 
   //need to wait, then read the file
 

@@ -84,4 +84,5 @@ makeboth : $(consumer_exe) $(producer_exe)
 
 .PHONY: clean
 clean:
-	$(RM) -r $(obj_dir) $(dep_dir) $(consumer_exe) $(producer_exe) 
+	$(RM) -r $(obj_dir) $(dep_dir) $(consumer_exe) $(producer_exe)
+# want to "wipe" log.txt and transfer_file
