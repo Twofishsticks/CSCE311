@@ -91,9 +91,22 @@ int Producer::Produce(const std::string& msg) {
   // BUS ERROR
   //std::cout << "buf_file_addr at end "<<buf_file_addr<< std::endl;
 
+<<<<<<< HEAD
   //signal consumer that capitalization is finished
   log_sig_.Up();
   std::cout << "buf_file_addr at end: "<<buf_file_addr<< std::endl;
+=======
+  // wait for consumer to finish uploading the dat file to buf_file_addr
+  //log_sig_.Down();
+
+
+
+  std::cout << "buf_file_addr at end "<<buf_file_addr<< std::endl;
+
+  //signal consumer that capitalization is finished
+  //log_sig_.Up();
+
+>>>>>>> ee9ee10aa978777e0dab85e811e381269ed71caf
   return 0;
 }
 
