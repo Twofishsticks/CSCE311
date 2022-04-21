@@ -86,13 +86,18 @@ int Producer::Produce(const std::string& msg) {
 
   // wait to see if file can be opened
   log_sig_.Down();
-  char jo = buf_file_addr[0];
-  //char jo = buf_file_addr[5];
-  // BUS ERROR
-  //std::cout << "buf_file_addr at end "<<buf_file_addr<< std::endl;
 
-  //signal consumer that capitalization is finished
-  log_sig_.Up();
+  int log_fd;
+  long int log_size;  // off_t is a long int
+  std::tie(log_fd, log_size) = OpenFile(buf_file_addr, O_RDWR);
+
+  // map to transfer file pages in page cache
+  char *log_file_addr = static_cast<char *>(
+    ::mmap(nullptr, log_size, PROT_READ | PROT_WRITE, MAP_SHARED, log_fd, 0));
+
+  std::cout << "log_file_addr at end: "<<log_file_addr<< std::endl;
+
+
   std::cout << "buf_file_addr at end: "<<buf_file_addr<< std::endl;
   return 0;
 }

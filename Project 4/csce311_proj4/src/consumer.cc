@@ -100,10 +100,11 @@ void Consumer::Consume(const char log_file_name[]) {
     //std::cout << "buf suze: " << buf_size<<std::endl;
     //buf_file_addr = log_file_addr; // this works, but is unneeded
     // adds buf_file_addr to top of log file
+    /*
     for (long int i = 0; i < buf_size; ++i) {
       log_file_addr[log_size+i] = buf_file_addr[i];
     }
-
+    */
 
     log_sig_.Up();// signal to producer that buf_file_addr is ready to go
 
@@ -112,8 +113,8 @@ void Consumer::Consume(const char log_file_name[]) {
     log_sig_.Down();
 
 
-    //signal producer that the file is ready
     log_sig_.Up();
+
 
     // update log file
     if (msync(log_file_addr, log_size + buf_size, MS_SYNC) < 0)
