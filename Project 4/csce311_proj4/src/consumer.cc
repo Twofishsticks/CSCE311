@@ -74,20 +74,9 @@ void Consumer::Consume(const char log_file_name[]) {
       HandleError("Transfer file map close");
     // open log file and get size
     // remove the newline from buf_file_addr
-<<<<<<< HEAD
     int log_fd;
     long int log_size;  // off_t is a long int
     std::tie(log_fd, log_size) = OpenFile(buf_file_addr, O_RDWR);
-=======
-    char* tempchar = buf_file_addr;
-    tempchar[strlen(tempchar)-1] = '\0';
-    buf_file_addr = tempchar;
-
-    int log_fd;
-    long int log_size;  // off_t is a long int
-    std::tie(log_fd, log_size) = OpenFile(buf_file_addr, O_RDWR);
-
->>>>>>> ee9ee10aa978777e0dab85e811e381269ed71caf
     // add necessary bytes to end of log file
     if (::fallocate(log_fd, 0, log_size, buf_size) < 0)
       HandleError("Allocating additional log file size");
@@ -100,7 +89,7 @@ void Consumer::Consume(const char log_file_name[]) {
                                                      log_fd,
                                                      0));
 
-    //std::cout << "log_file_addr at line 82 "<<log_file_addr<< std::endl;
+    std::cout << "log_file_addr at line 82 "<<log_file_addr<< std::endl;
     // log_file_addr is what is inside the file
     if (log_file_addr == MAP_FAILED)
       HandleError("Log file map");
@@ -109,74 +98,23 @@ void Consumer::Consume(const char log_file_name[]) {
 
     //std::cout << "log size: " << log_size<<std::endl;
     //std::cout << "buf suze: " << buf_size<<std::endl;
-<<<<<<< HEAD
     //buf_file_addr = log_file_addr; // this works, but is unneeded
-=======
-    buf_file_addr = log_file_addr; // this works lol
-    /*
->>>>>>> ee9ee10aa978777e0dab85e811e381269ed71caf
     // adds buf_file_addr to top of log file
     for (long int i = 0; i < buf_size; ++i) {
       log_file_addr[log_size+i] = buf_file_addr[i];
     }
 
-<<<<<<< HEAD
 
     log_sig_.Up();// signal to producer that buf_file_addr is ready to go
 
-=======
-    //log_sig_.Up();// signal to producer that buf_file_addr is ready to go
->>>>>>> ee9ee10aa978777e0dab85e811e381269ed71caf
 
     //wait for producer to finish changing to uppercase
     log_sig_.Down();
 
-<<<<<<< HEAD
-=======
-    //testing
-    //std::cout << "log_file_addr at line 94 "<<log_file_addr<<endl;
-    // log file is what's in log file + buf_file_addr
-    std::cout << "buf_file_addr at line 94: "<<buf_file_addr<<std::endl;
-    // buf_file_addr is what is sent from producer
->>>>>>> ee9ee10aa978777e0dab85e811e381269ed71caf
-
-    //wait for producer to finish changing to uppercase
-    //log_sig_.Down();
-
-<<<<<<< HEAD
-=======
-    // update log file
-    if (msync(log_file_addr, log_size + buf_size, MS_SYNC) < 0)
-      HandleError("Synchronizing log file map");
-
-    // empty transfer file
-    if (::truncate(buf_file_name_, 0) < 0)
-      HandleError("Emptying transfer file");
-
-    // release copy of mapped mem
-    if (::munmap(buf_file_addr, buf_size))
-      HandleError("Buffer file unmap");
-    if (::munmap(log_file_addr, log_size + buf_size))
-      HandleError("Log file unmap");
-
->>>>>>> ee9ee10aa978777e0dab85e811e381269ed71caf
 
     //signal producer that the file is ready
-    //log_sig_.Up();
+    log_sig_.Up();
 
-    // copy from transfer file to log file-
-    /*
-    for (long int i = 0; i < buf_size; ++i) {
-      log_file_addr[log_size + i] = buf_file_addr[i];
-    }
-    // update log file
-    if (msync(log_file_addr, log_size + buf_size, MS_SYNC) < 0)
-      HandleError("Synchronizing log file map");
-
-    // empty transfer file
-    if (::truncate(buf_file_name_, 0) < 0)
-      HandleError("Emptying transfer file");
-    */
     // update log file
     if (msync(log_file_addr, log_size + buf_size, MS_SYNC) < 0)
       HandleError("Synchronizing log file map");
