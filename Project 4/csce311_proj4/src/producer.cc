@@ -40,6 +40,7 @@ std::tuple<int, off_t> OpenFile(const char file_name[], int flags) {
 
 //GENERATOR
 int Producer::Produce(const std::string& msg) {
+  std::cout<<msg<<"message"<<std::endl;
   // open buffer file and get stats
   int buf_fd;
   long int buf_size;
@@ -71,7 +72,7 @@ int Producer::Produce(const std::string& msg) {
   // copy string msg into memory mapped file in page cache
   for (size_t i = 0; i < msg.length(); ++i)
     buf_file_addr[i] = msg[i];
-  buf_file_addr[msg.length()] = '\n';
+  //buf_file_addr[msg.length()] = '\n';
 
   std::cout << "buf_file_addr at line 73: "<<buf_file_addr<< std::endl;
   // buf_file_addr is what is sent from the producer, but NEEDS be changed
@@ -85,12 +86,14 @@ int Producer::Produce(const std::string& msg) {
 
   // wait to see if file can be opened
   log_sig_.Down();
-  
-  std::cout << "buf_file_addr at end "<<buf_file_addr<< std::endl;
+  char jo = buf_file_addr[0];
+  //char jo = buf_file_addr[5];
+  // BUS ERROR
+  //std::cout << "buf_file_addr at end "<<buf_file_addr<< std::endl;
 
   //signal consumer that capitalization is finished
-  //log_sig_.Up();
-
+  log_sig_.Up();
+  std::cout << "buf_file_addr at end: "<<buf_file_addr<< std::endl;
   return 0;
 }
 
