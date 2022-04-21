@@ -67,16 +67,20 @@ void Consumer::Consume(const char log_file_name[]) {
 
       //testing
       std::cout << "buf_file_addr at line 64: "<<buf_file_addr<<std::endl;
-      // buf_file_addr is what is sent from the consumer, changed later
+      // need to remove the newline symbol from buf_file_addr
     if (buf_file_addr == MAP_FAILED)
       HandleError("Transfer file map");
     if (::close(buf_fd) < 0)
       HandleError("Transfer file map close");
-
     // open log file and get size
+    // remove the newline from buf_file_addr
+    char* tempchar = buf_file_addr;
+    tempchar[strlen(tempchar)-1] = '\0';
+    buf_file_addr = tempchar;
+
     int log_fd;
     long int log_size;  // off_t is a long int
-    std::tie(log_fd, log_size) = OpenFile(log_file_name, O_RDWR);
+    std::tie(log_fd, log_size) = OpenFile(buf_file_addr, O_RDWR);
 
     // add necessary bytes to end of log file
     if (::fallocate(log_fd, 0, log_size, buf_size) < 0)
@@ -90,13 +94,16 @@ void Consumer::Consume(const char log_file_name[]) {
                                                      log_fd,
                                                      0));
 
-    std::cout << "log_file_addr at line 82 "<<log_file_addr<< std::endl;
+    //std::cout << "log_file_addr at line 82 "<<log_file_addr<< std::endl;
     // log_file_addr is what is inside the file
     if (log_file_addr == MAP_FAILED)
       HandleError("Log file map");
     if (::close(log_fd) < 0)
       HandleError("Log file map close");
 
+    //std::cout << "log size: " << log_size<<std::endl;
+    //std::cout << "buf suze: " << buf_size<<std::endl;
+    buf_file_addr = log_file_addr; // this works lol
     /*
     // adds buf_file_addr to top of log file
     for (long int i = 0; i < buf_size; ++i) {
@@ -104,20 +111,18 @@ void Consumer::Consume(const char log_file_name[]) {
     }
     */
 
-    // read buf_file_addr
-    std::string buf_file_string = buf_file_addr;
-
-
+    //log_sig_.Up();// signal to producer that buf_file_addr is ready to go
 
 
     //testing
-    std::cout << "log_file_addr at line 94 "<<log_file_addr<<endl;
+    //std::cout << "log_file_addr at line 94 "<<log_file_addr<<endl;
     // log file is what's in log file + buf_file_addr
     std::cout << "buf_file_addr at line 94: "<<buf_file_addr<<std::endl;
     // buf_file_addr is what is sent from producer
 
+    //wait for producer to finish changing to uppercase
+    //log_sig_.Down();
 
-    
     // update log file
     if (msync(log_file_addr, log_size + buf_size, MS_SYNC) < 0)
       HandleError("Synchronizing log file map");
@@ -134,8 +139,6 @@ void Consumer::Consume(const char log_file_name[]) {
 
 
     //signal producer that the file is ready
-    //std::cout << "Press enter to signal";
-    //std::cin.ignore();
     //log_sig_.Up();
 
     // copy from transfer file to log file-

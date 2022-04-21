@@ -80,7 +80,7 @@ int Producer::Produce(const std::string& msg) {
   if (msync(buf_file_addr, buf_size, MS_SYNC) < 0)
     HandleError("Synchronizing transfer file map");;
 
-  // signal consumer
+  // signal consumer filename is transferred
   log_sig_.Up();
 
 
@@ -90,6 +90,10 @@ int Producer::Produce(const std::string& msg) {
 
 
   std::cout << "buf_file_addr at end "<<buf_file_addr<< std::endl;
+
+  //signal consumer that capitalization is finished
+  //log_sig_.Up();
+
   return 0;
 }
 
