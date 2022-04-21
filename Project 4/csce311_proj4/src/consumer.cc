@@ -118,7 +118,7 @@ void Consumer::Consume(const char log_file_name[]) {
 
     // release copy of mapped mem
     if (::munmap(buf_file_addr, buf_size))
-      HandleError("Buffer file unmap");
+      HandleError("Buffer file unmap"); 
     if (::munmap(log_file_addr, log_size + buf_size))
       HandleError("Log file unmap");
 
