@@ -28,7 +28,7 @@ int main(/*int argc, char* argv[]*/) {
   log_writer = new logger::Consumer();
   cout << "SERVER STARTED" << endl;
   // see consumer.cc for documented steps
-  log_writer->Consume("log.txt");
+  log_writer->Consume("dante.txt");
 
   return 0;
 }

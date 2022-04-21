@@ -3,7 +3,8 @@
 
 #include <csce311_proj4/inc/consumer.h>
 #include <iostream>
-
+#include <string>
+#include <fstream>
 using std::cout;
 using std::endl;
 
@@ -96,10 +97,18 @@ void Consumer::Consume(const char log_file_name[]) {
     if (::close(log_fd) < 0)
       HandleError("Log file map close");
 
-    // copy from transfer file to log file-
+    /*
+    // adds buf_file_addr to top of log file
     for (long int i = 0; i < buf_size; ++i) {
-      log_file_addr[log_size + i] = buf_file_addr[i];
+      log_file_addr[log_size+i] = buf_file_addr[i];
     }
+    */
+
+    // read buf_file_addr
+    std::string buf_file_string = buf_file_addr;
+
+
+
 
     //testing
     std::cout << "log_file_addr at line 94 "<<log_file_addr<<endl;
@@ -108,6 +117,7 @@ void Consumer::Consume(const char log_file_name[]) {
     // buf_file_addr is what is sent from producer
 
 
+    
     // update log file
     if (msync(log_file_addr, log_size + buf_size, MS_SYNC) < 0)
       HandleError("Synchronizing log file map");
@@ -118,7 +128,7 @@ void Consumer::Consume(const char log_file_name[]) {
 
     // release copy of mapped mem
     if (::munmap(buf_file_addr, buf_size))
-      HandleError("Buffer file unmap"); 
+      HandleError("Buffer file unmap");
     if (::munmap(log_file_addr, log_size + buf_size))
       HandleError("Log file unmap");
 
@@ -150,6 +160,4 @@ void Consumer::Consume(const char log_file_name[]) {
 
 /*
 things to note: buf_file_addr is the shared mem space: it gets tranferred from one array to another in both files
-so, use this to "move" data back and forth, semaphore for stop/go up=go, down = wait
-
 */

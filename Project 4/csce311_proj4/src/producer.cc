@@ -2,7 +2,7 @@
 //
 
 #include <csce311_proj4/inc/producer.h>
-
+#include <iterator>
 namespace logger {
 
 Producer::Producer() : log_sig_(log_sig_name_) {
@@ -83,21 +83,13 @@ int Producer::Produce(const std::string& msg) {
   // signal consumer
   log_sig_.Up();
 
-  // release copy of mapped mem
-  //if (::munmap(buf_file_addr, msg.length() + 1))
-    //HandleError("Buffer file unmap");
-
 
   // wait for consumer to finish uploading the dat file to buf_file_addr
   //log_sig_.Down();
-  // parse through log.txt OR buf_file_addr
-  /*
-  for (long unsigned int i = 0; i < sizeof(buf_file_addr); ++i){
-    if (buf_file_addr[i]>=97 && buf_file_addr[i]<=122) {
-      buf_file_addr[i]-=32;
-    }
-  }
-  */
+
+
+
+  std::cout << "buf_file_addr at end "<<buf_file_addr<< std::endl;
   return 0;
 }
 
