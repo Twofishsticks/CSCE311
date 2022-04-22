@@ -18,7 +18,6 @@ logger::Consumer* log_writer;
 
 
 int main(/*int argc, char* argv[]*/) {
-  //assert(argc == 2 && "usage: consumer <log_file_name>");
 
   // set SIGTERM signal handler to unlink shm
   ::signal(SIGTERM, LoggerSigTermHandler);

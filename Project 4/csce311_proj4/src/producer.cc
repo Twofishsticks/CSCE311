@@ -76,8 +76,6 @@ int Producer::Produce(const std::string& msg) {
     buf_file_addr[i] = msg[i];
   //buf_file_addr[msg.length()] = '\n';
 
-  std::cout << "buf_file_addr at line 73: "<<buf_file_addr<< std::endl;
-  // buf_file_addr is what is sent from the producer, but NEEDS be changed
 
   // update transfer file
   if (msync(buf_file_addr, buf_size, MS_SYNC) < 0)
@@ -141,18 +139,8 @@ int Producer::Produce(const std::string& msg) {
     third.join();
     rest.join();
 
-
-  std::cout << "log_file_addr at end: "<<log_file_addr<< std::endl;
-
-  //log_sig_.Up();
-
-  //std::cout << "buf_file_addr at end: "<<buf_file_addr<< std::endl;
   return 0;
 }
 
-// Threads to make the file capital
-//static void makeCapitalFirst(char* file) {
-
-//}
 
 }  // namespace logger

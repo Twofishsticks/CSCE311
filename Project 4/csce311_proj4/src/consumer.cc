@@ -96,24 +96,7 @@ void Consumer::Consume(const char log_file_name[]) {
     if (::close(log_fd) < 0)
       HandleError("Log file map close");
 
-    //std::cout << "log size: " << log_size<<std::endl;
-    //std::cout << "buf suze: " << buf_size<<std::endl;
-    //buf_file_addr = log_file_addr; // this works, but is unneeded
-    // adds buf_file_addr to top of log file
-    /*
-    for (long int i = 0; i < buf_size; ++i) {
-      log_file_addr[log_size+i] = buf_file_addr[i];
-    }
-    */
-
     log_sig_.Up();// signal to producer that buf_file_addr is ready to go
-
-
-    //wait for producer to finish changing to uppercase
-    //log_sig_.Down();
-
-
-    //log_sig_.Up();
 
 
     // update log file
@@ -134,7 +117,3 @@ void Consumer::Consume(const char log_file_name[]) {
 
 
 }  // namespace logger
-
-/*
-things to note: buf_file_addr is the shared mem space: it gets tranferred from one array to another in both files
-*/
