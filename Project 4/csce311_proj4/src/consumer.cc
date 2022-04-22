@@ -52,6 +52,7 @@ void Consumer::HandleError(const char msg[]) {
 
 
 void Consumer::Consume(const char log_file_name[]) {
+  (void)log_file_name;
   while (true) {
     log_sig_.Down();  // block until client ready
     cout << "CLIENT REQUEST RECEIVED"<< endl;

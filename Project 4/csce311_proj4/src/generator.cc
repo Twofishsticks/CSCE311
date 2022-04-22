@@ -7,8 +7,8 @@
 #include <iostream>
 
 int main(int argc, char* argv[]) {
+  (void)argc; 
   logger::Producer log_writer;
-
   std::string msg(argv[1]);
 
   log_writer.Produce(argv[1]);
