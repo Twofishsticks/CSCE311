@@ -66,7 +66,6 @@ void Consumer::Consume(const char log_file_name[]) {
       ::mmap(nullptr, buf_size, PROT_READ | PROT_WRITE, MAP_SHARED, buf_fd, 0));
 
       //testing
-      std::cout << "buf_file_addr at line 64: "<<buf_file_addr<<std::endl;
       // need to remove the newline symbol from buf_file_addr
     if (buf_file_addr == MAP_FAILED)
       HandleError("Transfer file map");
@@ -77,6 +76,7 @@ void Consumer::Consume(const char log_file_name[]) {
     int log_fd;
     long int log_size;  // off_t is a long int
     std::tie(log_fd, log_size) = OpenFile(buf_file_addr, O_RDWR);
+    std::cout << "\tOPENING: "<< buf_file_addr<<std::endl;
     // add necessary bytes to end of log file
     if (::fallocate(log_fd, 0, log_size, buf_size) < 0)
       HandleError("Allocating additional log file size");
@@ -89,13 +89,13 @@ void Consumer::Consume(const char log_file_name[]) {
                                                      log_fd,
                                                      0));
 
-    std::cout << "log_file_addr at line 82 "<<log_file_addr<< std::endl;
     // log_file_addr is what is inside the file
     if (log_file_addr == MAP_FAILED)
       HandleError("Log file map");
     if (::close(log_fd) < 0)
       HandleError("Log file map close");
 
+    std::cout << "\tFILE MAPPED TO SHARED MEMORY"<< std::endl;
     log_sig_.Up();// signal to producer that buf_file_addr is ready to go
 
 
@@ -112,6 +112,7 @@ void Consumer::Consume(const char log_file_name[]) {
       HandleError("Buffer file unmap");
     if (::munmap(log_file_addr, log_size + buf_size))
       HandleError("Log file unmap");
+    std::cout<< "\tFILE CLOSED"<< std::endl;
   }
 }
 

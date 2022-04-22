@@ -42,7 +42,6 @@ std::tuple<int, off_t> OpenFile(const char file_name[], int flags) {
 
 //GENERATOR
 int Producer::Produce(const std::string& msg) {
-  std::cout<<msg<<"message"<<std::endl;
   // open buffer file and get stats
   int buf_fd;
   long int buf_size;
@@ -64,7 +63,6 @@ int Producer::Produce(const std::string& msg) {
                                                    MAP_SHARED,
                                                    buf_fd,
                                                    0));
-  std::cout << "buf_file_addr at line 57: "<<buf_file_addr<< std::endl;
   // should be nothing: this only links the mmap
   if (buf_file_addr == MAP_FAILED)
     HandleError("Buffer file map");
