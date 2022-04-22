@@ -101,16 +101,36 @@ int Producer::Produce(const std::string& msg) {
 
     // couldn't get a function to make properly, using lambdas for threads
     auto a = [](char* file, long int size) {
-
+      long int real = size/4;
+      for (int i = 0; i < real; i++) {
+        if (file[i]>=97 && file[i]<=122) {
+          file[i] = file[i]-32;
+        }
+      }
     };
     auto b = [](char* file, long int size) {
-
+      long int real = size/4;
+      for ( int i = real; i < (real*2); i++) {
+        if (file[i]>=97 && file[i]<=122) {
+          file[i] = file[i]-32;
+        }
+      }
     };
     auto c = [](char* file, long int size) {
-
+      long int real = size/4;
+      for (int i = real*2; i < (real*3); i++) {
+        if (file[i]>=97 && file[i]<=122) {
+          file[i] = file[i]-32;
+        }
+      }
     };
     auto d = [](char* file, long int size) {
-
+      long int real = size - 3*(size/4);
+      for (int i = real*3; i < size; i++ ) {
+        if (file[i]>=97 && file[i]<=122) {
+          file[i] = file[i]-32;
+        }
+      }
     };
     thread first(a,log_file_addr, log_size);
     thread second(b,log_file_addr, log_size);

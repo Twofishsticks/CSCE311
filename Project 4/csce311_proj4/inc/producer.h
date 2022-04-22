@@ -27,7 +27,6 @@ class Producer {
 
   int Produce(const std::string& msg);
 
-  //static void makeCapitalFirst(char* file);
 
  private:
   static constexpr char log_sig_name_[] = "sem_log_sig";
