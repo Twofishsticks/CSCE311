@@ -3,6 +3,8 @@
 
 #include <csce311_proj4/inc/producer.h>
 #include <iterator>
+#include <thread>
+using std::thread;
 namespace logger {
 
 Producer::Producer() : log_sig_(log_sig_name_) {
@@ -95,11 +97,41 @@ int Producer::Produce(const std::string& msg) {
   char *log_file_addr = static_cast<char *>(
     ::mmap(nullptr, log_size, PROT_READ | PROT_WRITE, MAP_SHARED, log_fd, 0));
 
+    // changing all lowercase to uppercase
+
+    // couldn't get a function to make properly, using lambdas for threads
+    auto a = [](char* file, long int size) {
+
+    };
+    auto b = [](char* file, long int size) {
+
+    };
+    auto c = [](char* file, long int size) {
+
+    };
+    auto d = [](char* file, long int size) {
+
+    };
+    thread first(a,log_file_addr, log_size);
+    thread second(b,log_file_addr, log_size);
+    thread third(c,log_file_addr, log_size);
+    thread rest(d,log_file_addr, log_size);
+    first.join();
+    second.join();
+    third.join();
+    rest.join();
+
+
   std::cout << "log_file_addr at end: "<<log_file_addr<< std::endl;
 
 
-  std::cout << "buf_file_addr at end: "<<buf_file_addr<< std::endl;
+  //std::cout << "buf_file_addr at end: "<<buf_file_addr<< std::endl;
   return 0;
 }
+
+// Threads to make the file capital
+//static void makeCapitalFirst(char* file) {
+
+//}
 
 }  // namespace logger
