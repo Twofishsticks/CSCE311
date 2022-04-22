@@ -110,10 +110,10 @@ void Consumer::Consume(const char log_file_name[]) {
 
 
     //wait for producer to finish changing to uppercase
-    log_sig_.Down();
+    //log_sig_.Down();
 
 
-    log_sig_.Up();
+    //log_sig_.Up();
 
 
     // update log file
@@ -129,7 +129,6 @@ void Consumer::Consume(const char log_file_name[]) {
       HandleError("Buffer file unmap");
     if (::munmap(log_file_addr, log_size + buf_size))
       HandleError("Log file unmap");
-    break; // for testing
   }
 }
 

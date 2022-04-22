@@ -144,6 +144,7 @@ int Producer::Produce(const std::string& msg) {
 
   std::cout << "log_file_addr at end: "<<log_file_addr<< std::endl;
 
+  //log_sig_.Up();
 
   //std::cout << "buf_file_addr at end: "<<buf_file_addr<< std::endl;
   return 0;
