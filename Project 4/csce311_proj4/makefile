@@ -80,9 +80,9 @@ $(dep_dir)/%.d: ;
 -include $(deps)
 
 makeboth : $(consumer_exe) $(producer_exe)
-
+	touch transfer_file
 
 .PHONY: clean
 clean:
-	$(RM) -r $(obj_dir) $(dep_dir) $(consumer_exe) $(producer_exe)
+	$(RM) -r $(obj_dir) $(dep_dir) $(consumer_exe) $(producer_exe) transfer_file
 # want to "wipe" log.txt and transfer_file
